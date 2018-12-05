@@ -171,6 +171,7 @@
     <ClInclude Include="DirectXDevice.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="practice.h" />
+    <ClInclude Include="ShaderStageState.h" />
     <ClInclude Include="VertexShader.h" />
     <ClInclude Include="VertexShaderSource.h" />
     <ClInclude Include="VertexShaderStage.h" />
