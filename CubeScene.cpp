@@ -209,13 +209,13 @@ bool CubeScene::Render(Renderer* renderer)
 
   const auto vertex_shader = ShaderManager::Instance().GetShader("Cube_VS");
   auto vs_stage = pipeline->GetVertexShaderStage();
-  vs_stage->BindShader(vertex_shader);
-  vs_stage->BindConstantBuffers(0, 1, &m_pConstantBuffer);
+  vs_stage->State()->SetShader(vertex_shader);
+  vs_stage->State()->SetConstantBuffers(0, 1, &m_pConstantBuffer);
 
   const auto pixel_shader = ShaderManager::Instance().GetShader("Cube_PS");
   auto ps_stage = pipeline->GetPixelShaderStage();
-  ps_stage->BindShader(pixel_shader);
-  ps_stage->BindConstantBuffers(0, 1, &m_pConstantBuffer);
+  ps_stage->State()->SetShader(pixel_shader);
+  ps_stage->State()->SetConstantBuffers(0, 1, &m_pConstantBuffer);
 
   renderer->DrawIndexed(m_indexCount, 0, 0);
 
@@ -232,7 +232,7 @@ bool CubeScene::Render(Renderer* renderer)
     m_constantBufferData.vOutputColor = m_lightColors[m];
     renderer->UpdateSubresource(m_pConstantBuffer, 0, nullptr, &m_constantBufferData, 0, 0);
 
-    ps_stage->BindShader(pixel_shader_solid);
+    ps_stage->State()->SetShader(pixel_shader_solid);
 
     renderer->DrawIndexed(36, 0, 0);
   }
