@@ -11,11 +11,11 @@ CubeScene::CubeScene(): m_indexCount(0)
 
 CubeScene::~CubeScene()
 {
-  SAFE_RELEASE(m_pVertexBuffer);
-  SAFE_RELEASE(m_pIndexBuffer);
-  SAFE_RELEASE(m_pInputLayout);
-  SAFE_RELEASE(m_pInputLayoutExtended);
-  SAFE_RELEASE(m_pConstantBuffer);
+  SAFE_RELEASE(vertex_buffer_);
+  SAFE_RELEASE(index_buffer_);
+  SAFE_RELEASE(input_layout_);
+  SAFE_RELEASE(input_layout_extended_);
+  SAFE_RELEASE(constant_buffer_);
 }
 
 bool CubeScene::Initialize(Renderer* renderer)
@@ -23,9 +23,9 @@ bool CubeScene::Initialize(Renderer* renderer)
   auto device = renderer->Device();
 
   // initialize world, view, and projection matrices
-  m_World = renderer->GetWorldMatrix();
-  m_View = renderer->GetViewMatrix();
-  m_Projection = renderer->GetProjectionMatrix();
+  world_ = renderer->GetWorldMatrix();
+  view_ = renderer->GetViewMatrix();
+  projection_ = renderer->GetProjectionMatrix();
 
   // Create vertex buffer
   VertexPositionNormal vertices[] =
@@ -74,7 +74,7 @@ bool CubeScene::Initialize(Renderer* renderer)
   vData.SysMemPitch = 0;
   vData.SysMemSlicePitch = 0;
 
-  HRESULT hr = device->CreateBuffer(&vDesc, &vData, &m_pVertexBuffer);
+  HRESULT hr = device->CreateBuffer(&vDesc, &vData, &vertex_buffer_);
   if (FAILED(hr))
     return false;
 
@@ -114,7 +114,7 @@ bool CubeScene::Initialize(Renderer* renderer)
   iData.SysMemPitch = 0;
   iData.SysMemSlicePitch = 0;
 
-  hr = device->CreateBuffer(&iDesc, &iData, &m_pIndexBuffer);
+  hr = device->CreateBuffer(&iDesc, &iData, &index_buffer_);
 
   // Create the constant buffer
   D3D11_BUFFER_DESC bd;
@@ -123,7 +123,7 @@ bool CubeScene::Initialize(Renderer* renderer)
   bd.ByteWidth = sizeof(ConstantBufferStruct);
   bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
   bd.CPUAccessFlags = 0;
-  hr = device->CreateBuffer(&bd, nullptr, &m_pConstantBuffer);
+  hr = device->CreateBuffer(&bd, nullptr, &constant_buffer_);
   if (FAILED(hr))
     return false;
 
@@ -139,7 +139,7 @@ bool CubeScene::Initialize(Renderer* renderer)
 
   ID3D11InputLayout* input_layout = nullptr;
   hr = device->CreateInputLayout(layout, ARRAYSIZE(layout), source->Blob()->GetBufferPointer(), source->Blob()->GetBufferSize(), &input_layout);
-  m_pInputLayout = input_layout;
+  input_layout_ = input_layout;
   return !FAILED(hr);
 }
 
@@ -157,7 +157,7 @@ bool CubeScene::Update(Renderer* renderer, float elapsed)
   t = (timeCur - timeStart) / 1000.0f;
 
   // Rotate cube around the origin
-  m_World = DirectX::XMMatrixRotationY(t);
+  world_ = DirectX::XMMatrixRotationY(t);
 
   // Setup our lighting parameters
   DirectX::XMFLOAT4 vLightDirs[2] =
@@ -180,9 +180,9 @@ bool CubeScene::Update(Renderer* renderer, float elapsed)
   // To make sure wold matrix is used inside shader as it is here, we transpose.
   // To disable HLSL to use column-major matrix storage, set D3D10_SHADER_PACK_MATRIX_ROW_MAJOR during
   // shader compilation
-  m_constantBufferData.world = XMMatrixTranspose(m_World);
-  m_constantBufferData.view = XMMatrixTranspose(m_View);
-  m_constantBufferData.projection = XMMatrixTranspose(m_Projection);
+  m_constantBufferData.world = XMMatrixTranspose(world_);
+  m_constantBufferData.view = XMMatrixTranspose(view_);
+  m_constantBufferData.projection = XMMatrixTranspose(projection_);
   m_constantBufferData.vLightDir[0] = m_lightDirs[0];
   m_constantBufferData.vLightDir[1] = m_lightDirs[1];
   m_constantBufferData.vLightColor[0] = m_lightColors[0];
@@ -200,22 +200,22 @@ bool CubeScene::Render(Renderer* renderer)
   // Set up the IA stage by setting the input topology and layout.
   UINT stride = sizeof(VertexPositionNormal);
   UINT offset = 0;
-  ia_stage->BindVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
-  ia_stage->BindIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-  ia_stage->SetInputLayout(m_pInputLayout);
+  ia_stage->BindVertexBuffers(0, 1, &vertex_buffer_, &stride, &offset);
+  ia_stage->BindIndexBuffer(index_buffer_, DXGI_FORMAT_R16_UINT, 0);
+  ia_stage->SetInputLayout(input_layout_);
   ia_stage->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-  context->UpdateSubresource(m_pConstantBuffer, 0, nullptr, &m_constantBufferData, 0, 0);
+  context->UpdateSubresource(constant_buffer_, 0, nullptr, &m_constantBufferData, 0, 0);
 
   const auto vertex_shader = ShaderManager::Instance().GetShader("Cube_VS");
   auto vs_stage = pipeline->GetVertexShaderStage();
   vs_stage->State()->SetShader(vertex_shader);
-  vs_stage->State()->SetConstantBuffers(0, 1, &m_pConstantBuffer);
+  vs_stage->State()->SetConstantBuffers(0, 1, &constant_buffer_);
 
   const auto pixel_shader = ShaderManager::Instance().GetShader("Cube_PS");
   auto ps_stage = pipeline->GetPixelShaderStage();
   ps_stage->State()->SetShader(pixel_shader);
-  ps_stage->State()->SetConstantBuffers(0, 1, &m_pConstantBuffer);
+  ps_stage->State()->SetConstantBuffers(0, 1, &constant_buffer_);
 
   renderer->DrawIndexed(m_indexCount, 0, 0);
 
@@ -230,7 +230,7 @@ bool CubeScene::Render(Renderer* renderer)
     // Update the world variable to reflect the current light
     m_constantBufferData.world = XMMatrixTranspose(mLight);
     m_constantBufferData.vOutputColor = m_lightColors[m];
-    renderer->UpdateSubresource(m_pConstantBuffer, 0, nullptr, &m_constantBufferData, 0, 0);
+    renderer->UpdateSubresource(constant_buffer_, 0, nullptr, &m_constantBufferData, 0, 0);
 
     ps_stage->State()->SetShader(pixel_shader_solid);
 

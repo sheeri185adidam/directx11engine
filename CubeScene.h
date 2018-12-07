@@ -39,9 +39,9 @@ private:
           DirectX::XMFLOAT4(0.5f, 0.0f, 0.0f, 1.0f),
   };
 
-  ID3D11Buffer*            m_pVertexBuffer = nullptr;
-  ID3D11Buffer*            m_pIndexBuffer = nullptr;
-  ID3D11InputLayout*       m_pInputLayout = nullptr;
-  ID3D11InputLayout*       m_pInputLayoutExtended = nullptr;
-  ID3D11Buffer*            m_pConstantBuffer = nullptr;
+  ID3D11Buffer*            vertex_buffer_ = nullptr;
+  ID3D11Buffer*            index_buffer_ = nullptr;
+  ID3D11InputLayout*       input_layout_ = nullptr;
+  ID3D11InputLayout*       input_layout_extended_ = nullptr;
+  ID3D11Buffer*            constant_buffer_ = nullptr;
 };

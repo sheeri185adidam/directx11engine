@@ -14,16 +14,16 @@ public:
     const DirectX::XMMATRIX& view, 
     const DirectX::XMMATRIX& projection)
   {
-    m_World = world;
-    m_View = view;
-    m_Projection = projection;
+    world_ = world;
+    view_ = view;
+    projection_ = projection;
   }
 
   virtual ~Scene(){};
 protected:
   Scene(){};
 
-  DirectX::XMMATRIX                m_World{};
-  DirectX::XMMATRIX                m_View{};
-  DirectX::XMMATRIX                m_Projection{};
+  DirectX::XMMATRIX                world_{};
+  DirectX::XMMATRIX                view_{};
+  DirectX::XMMATRIX                projection_{};
 };
