@@ -1,5 +1,5 @@
 #include "CubeScene.h"
-#include "practice.h"
+#include "Common.h"
 #include "ShaderManager.h"
 #include "ShaderStage.h"
 

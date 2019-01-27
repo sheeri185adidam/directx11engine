@@ -1,5 +1,5 @@
 #pragma once
-#include "practice.h"
+#include "Common.h"
 #include <cstdint>
 #include <d3d11.h>
 #include <wrl.h>
