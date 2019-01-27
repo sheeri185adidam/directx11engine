@@ -23,7 +23,8 @@
     <ProjectGuid>{68EF7AFE-8A9D-47BB-8481-B8412F2C6448}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>practice</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <ProjectName>dx11engine</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -155,7 +156,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="CubeScene.h" />
+    <ClInclude Include="Helpers.h" />
     <ClInclude Include="InputAssemblerStage.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="SceneManager.h" />

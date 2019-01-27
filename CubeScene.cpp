@@ -114,7 +114,7 @@ bool CubeScene::Initialize(Renderer* renderer)
   iData.SysMemPitch = 0;
   iData.SysMemSlicePitch = 0;
 
-  hr = device->CreateBuffer(&iDesc, &iData, &index_buffer_);
+  device->CreateBuffer(&iDesc, &iData, &index_buffer_);
 
   // Create the constant buffer
   D3D11_BUFFER_DESC bd;
@@ -200,8 +200,8 @@ bool CubeScene::Render(Renderer* renderer)
   // Set up the IA stage by setting the input topology and layout.
   UINT stride = sizeof(VertexPositionNormal);
   UINT offset = 0;
-  ia_stage->BindVertexBuffers(0, 1, &vertex_buffer_, &stride, &offset);
-  ia_stage->BindIndexBuffer(index_buffer_, DXGI_FORMAT_R16_UINT, 0);
+  ia_stage->SetVertexBuffers(0, 1, &vertex_buffer_, &stride, &offset);
+  ia_stage->SetIndexBuffer(index_buffer_, DXGI_FORMAT_R16_UINT, 0);
   ia_stage->SetInputLayout(input_layout_);
   ia_stage->SetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
