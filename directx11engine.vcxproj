@@ -158,6 +158,8 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CubeScene.h" />
+    <ClInclude Include="GeometryShader.h" />
+    <ClInclude Include="GeometryShaderStage.h" />
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="InputAssemblerStage.h" />
     <ClInclude Include="Renderer.h" />
@@ -181,6 +183,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DirectXDevice.cpp" />
+    <ClCompile Include="GeometryShaderStage.cpp" />
     <ClCompile Include="InputAssemblerStage.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="CubeScene.cpp" />
