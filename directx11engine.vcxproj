@@ -177,6 +177,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="ShaderStageState.h" />
+    <ClInclude Include="StreamOutputStage.h" />
     <ClInclude Include="VertexShader.h" />
     <ClInclude Include="VertexShaderSource.h" />
     <ClInclude Include="VertexShaderStage.h" />

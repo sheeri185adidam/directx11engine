@@ -6,9 +6,12 @@
 Pipeline::Pipeline(ID3D11DeviceContext* context)
   : context_(context)
 {
+  assert(context_ != nullptr);
+
   input_assembler_stage_ = std::make_shared<InputAssemblerStage>(context_);
   vertex_shader_stage_ = std::make_shared<VertexShaderStage>(context_);
   geometry_shader_stage_ = std::make_shared<GeometryShaderStage>(context_);
+  stream_output_stage_ = std::make_shared<StreamOutputStage>(context_);
   pixel_shader_stage_ = std::make_shared<PixelShaderStage>(context_);
 }
 
@@ -25,5 +28,6 @@ ID3D11DeviceContext* Pipeline::Context() { return context_; }
 
 ShaderStage* Pipeline::GetVertexShaderStage() { return vertex_shader_stage_.get(); }
 ShaderStage* Pipeline::GetGeometryShaderStage() { return geometry_shader_stage_.get(); }
+StreamOutputStage* Pipeline::GetStreamOutputStage() { return stream_output_stage_.get(); }
 ShaderStage* Pipeline::GetPixelShaderStage() { return pixel_shader_stage_.get(); }
 InputAssemblerStage* Pipeline::GetInputAssemblerStage() { return input_assembler_stage_.get(); }

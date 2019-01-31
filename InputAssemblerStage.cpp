@@ -2,18 +2,28 @@
 #include "InputAssemblerStage.h"
 #include <cassert>
 
-InputAssemblerStage::InputAssemblerStage() = default;
-
 InputAssemblerStage::InputAssemblerStage(ID3D11DeviceContext* context)
-  :context_(context)
+  : InputAssemblerStage(context, D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT)
 {
-  assert(context_ != nullptr);
-  vertex_buffers_ = new VertexBufferContainerType(InputAssemblerStage::VertexBuffersMax());
-  strides_ = new std::vector<uint32_t>(InputAssemblerStage::VertexBuffersMax());
-  offsets_ = new std::vector<uint32_t>(InputAssemblerStage::VertexBuffersMax());
+
 }
 
-InputAssemblerStage::~InputAssemblerStage() = default;
+InputAssemblerStage::InputAssemblerStage(ID3D11DeviceContext* context, uint32_t count)
+  : context_(context)
+  , buffer_count_(count)
+{
+  assert(context_ != nullptr);
+  vertex_buffers_ = new VertexBufferContainerType(buffer_count_);
+  strides_ = new std::vector<uint32_t>(buffer_count_);
+  offsets_ = new std::vector<uint32_t>(buffer_count_);
+}
+
+InputAssemblerStage::~InputAssemblerStage()
+{
+  delete vertex_buffers_;
+  delete strides_;
+  delete offsets_;
+}
 
 void InputAssemblerStage::SetVertexBuffer(uint32_t slot, ID3D11Buffer* buffer, uint32_t stride, uint32_t offset)
 {
@@ -23,7 +33,7 @@ void InputAssemblerStage::SetVertexBuffer(uint32_t slot, ID3D11Buffer* buffer, u
   if (buffer == nullptr)
     return;
 
-  if (slot >= VertexBuffersMax())
+  if (slot >= buffer_count_)
     return;
 
   RemoveBuffers();
@@ -44,7 +54,7 @@ void InputAssemblerStage::SetVertexBuffers(uint32_t start_slot, uint32_t count, 
   if (buffers == nullptr || strides == nullptr || offsets == nullptr)
     return;
 
-  if (start_slot + count >= VertexBuffersMax())
+  if (start_slot + count >= buffer_count_)
     return;
 
   RemoveBuffers();

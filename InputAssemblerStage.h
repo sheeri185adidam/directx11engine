@@ -11,8 +11,8 @@ class InputAssemblerStage
 public:
   using VertexBufferContainerType = std::vector<ID3D11Buffer*>;
 
-  InputAssemblerStage();
   InputAssemblerStage(ID3D11DeviceContext* context);
+  InputAssemblerStage(ID3D11DeviceContext* context, uint32_t count);
   virtual ~InputAssemblerStage();
 
   virtual void ApplyState();
@@ -24,13 +24,13 @@ public:
   virtual void RemoveBuffers();
 
 protected:
-  virtual uint32_t VertexBuffersMax() { return D3D11_IA_VERTEX_INPUT_RESOURCE_SLOT_COUNT; }
   virtual bool IsInitialized() { return context_ != nullptr; }
   virtual void Updated(bool update) { updated_ = update; }
   virtual bool IsUpdated() { return updated_; }
 
   bool updated_ = true;
   ID3D11DeviceContext* context_ = nullptr;
+  uint32_t buffer_count_;
   VertexBufferContainerType* vertex_buffers_ = nullptr;
   ID3D11Buffer* index_buffer_ = nullptr;
   ID3D11InputLayout * input_layout_ = nullptr;
