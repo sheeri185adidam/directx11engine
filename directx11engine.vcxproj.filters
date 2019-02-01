@@ -93,6 +93,9 @@
     <ClInclude Include="StreamOutputStage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="RasterizerStage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp">

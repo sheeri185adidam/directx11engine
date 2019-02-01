@@ -162,6 +162,7 @@
     <ClInclude Include="GeometryShaderStage.h" />
     <ClInclude Include="Helpers.h" />
     <ClInclude Include="InputAssemblerStage.h" />
+    <ClInclude Include="RasterizerStage.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ShaderStage.h" />
