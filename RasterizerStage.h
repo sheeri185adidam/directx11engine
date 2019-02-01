@@ -11,6 +11,7 @@ public:
     , state_desc_()
     , viewports_count_(0)
     , viewports_(D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE, D3D11_VIEWPORT())
+    , scissors_(D3D11_VIEWPORT_AND_SCISSORRECT_OBJECT_COUNT_PER_PIPELINE, D3D11_RECT())
   {
     assert(context_ != nullptr);
   }
@@ -72,11 +73,30 @@ public:
     return result;
   }
 
+  virtual void SetScissors(const D3D11_RECT* scissors, uint32_t count)
+  {
+    if (scissors == nullptr)
+      return;
+
+    if (count > scissors_.size())
+      return;
+
+    for (uint32_t i = 0; i < count; ++i)
+    {
+      scissors_[i] = scissors[i];
+    }
+
+    scissor_count_ = count;
+    context_->RSSetScissorRects(count, scissors);
+  }
+
 private:
   ID3D11DeviceContext* context_;
   D3D11_RASTERIZER_DESC state_desc_;
   ID3D11RasterizerState* state_ = nullptr;
   uint32_t viewports_count_;
   std::vector<D3D11_VIEWPORT> viewports_;
+  uint32_t scissor_count_;
+  std::vector<D3D11_RECT> scissors_;
 };
 
